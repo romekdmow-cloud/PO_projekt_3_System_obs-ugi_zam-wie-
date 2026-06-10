@@ -117,7 +117,7 @@ void dodajProduktyDoZamowienia(shared_ptr<Zamowienie> zamowienie, const vector<P
         }
 
         zamowienie->dodajProdukt(oferta[wybor - 1]);
-        cout << "Dodano produkt.\n";
+        cout << "Dodano produkt.\n";   
     }
 }
 
@@ -284,6 +284,118 @@ void usunZamowienie(vector<shared_ptr<Zamowienie>>& zamowienia) {
     throw ZamowienieNieZnalezione(id);
 }
 
+
+void zapiszZamowienia(const vector<shared_ptr<Zamowienie>>& zamowienia, const string& nazwaPliku) {
+    ofstream plik(nazwaPliku);
+
+    if (!plik.is_open()) {
+        cout << "Nie udalo sie otworzyc pliku do zapisu: " << nazwaPliku << "\n";
+        return;
+    }
+
+    for (const shared_ptr<Zamowienie>& zam : zamowienia) {
+        ZamowienieLokal* lokal = dynamic_cast<ZamowienieLokal*>(zam.get());
+        ZamowienieDostawa* dostawa = dynamic_cast<ZamowienieDostawa*>(zam.get());
+
+        if (lokal != nullptr) {
+            plik << "LOKAL";
+            plik << ";" << lokal->getId();
+            plik << ";" << lokal->getData();
+            plik << ";" << static_cast<int>(lokal->getStatus());
+            plik << ";" << lokal->getNumerStolika();
+            plik << ";" << static_cast<int>(lokal->getPracownik());
+        } else if (dostawa != nullptr) {
+            plik << "DOSTAWA";
+            plik << ";" << dostawa->getId();
+            plik << ";" << dostawa->getData();
+            plik << ";" << static_cast<int>(dostawa->getStatus());
+            plik << ";" << dostawa->getAdres();
+            plik << ";" << dostawa->getTelefonKlienta();
+        } else {
+            continue;
+        }
+
+        plik << ";";
+        const vector<Produkt>& produkty = zam->getProdukty();
+        for (int i = 0; i < static_cast<int>(produkty.size()); i++) {
+            if (i > 0) plik << "|";
+            plik << produkty[i].getNazwa()
+                 << ":" << produkty[i].getCenaBazowa()
+                 << ":" << produkty[i].getTyp();
+        }
+        plik << "\n";
+    }
+
+    cout << "Zamowienia zapisane do pliku: " << nazwaPliku << "\n";
+}
+
+vector<string> podziel(const string& tekst, char znak) {
+    vector<string> wynik;
+    string token = "";
+    for (char c : tekst) {
+        if (c == znak) {
+            wynik.push_back(token);
+            token = "";
+        } else {
+            token += c;
+        }
+    }
+    wynik.push_back(token);
+    return wynik;
+}
+
+void wczytajZamowienia(vector<shared_ptr<Zamowienie>>& zamowienia, const string& nazwaPliku, int& nastepneId) {
+    ifstream plik(nazwaPliku);
+    if (!plik.is_open()) return;
+
+    string linia;
+    while (getline(plik, linia)) {
+        if (linia.empty()) continue;
+
+        vector<string> pola = podziel(linia, ';');
+        if (pola.size() < 7) continue;
+
+        string typ = pola[0];
+        int id = stoi(pola[1]);
+        string data = pola[2];
+        StatusZamowienia status = static_cast<StatusZamowienia>(stoi(pola[3]));
+
+        shared_ptr<Zamowienie> zam;
+        if (typ == "LOKAL") {
+            int stolik = stoi(pola[4]);
+            Pracownik prac = static_cast<Pracownik>(stoi(pola[5]));
+            zam = make_shared<ZamowienieLokal>(id, data, stolik, prac);
+        } else if (typ == "DOSTAWA") {
+            zam = make_shared<ZamowienieDostawa>(id, data, pola[4], pola[5]);
+        } else {
+            continue;
+        }
+
+        zam->setStatus(status);
+
+        string produktyTekst = pola[6];
+        if (!produktyTekst.empty()) {
+            vector<string> prodLista = podziel(produktyTekst, '|');
+            for (const string& pTekst : prodLista) {
+                vector<string> pPola = podziel(pTekst, ':');
+                if (pPola.size() >= 3) {
+                    zam->dodajProdukt(Produkt(pPola[0], stod(pPola[1]), pPola[2]));
+                }
+            }
+        }
+
+        zamowienia.push_back(zam);
+
+        if (id >= nastepneId) {
+            nastepneId = id + 1;
+        }
+    }
+
+    if (!zamowienia.empty()) {
+        cout << "Wczytano " << zamowienia.size() << " zamowien z pliku.\n";
+    }
+}
+
 int main() {
     vector<Produkt> oferta = wczytajOferteZPliku("DANE/menu.txt");
 
@@ -294,6 +406,8 @@ int main() {
 
     vector<shared_ptr<Zamowienie>> zamowienia;
     int nastepneId = 1;
+
+    wczytajZamowienia(zamowienia, "DANE/zamowienia.txt", nastepneId);
 
     while (true) {
         try {
@@ -321,6 +435,8 @@ int main() {
             } else if (wybor == 6) {
                 usunZamowienie(zamowienia);
             } else {
+                // Zapisz zamowienia przed wyjsciem
+                zapiszZamowienia(zamowienia, "DANE/zamowienia.txt");
                 cout << "Koniec programu.\n";
                 break;
             }
