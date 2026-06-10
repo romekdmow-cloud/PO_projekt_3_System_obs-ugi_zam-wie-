@@ -1,0 +1,5 @@
+Pizza Margherita;32.00;danie
+Burger;28.00;danie
+Frytki;12.00;dodatek
+Kawa;10.00;napoj
+Lemoniada;14.00;napoj
