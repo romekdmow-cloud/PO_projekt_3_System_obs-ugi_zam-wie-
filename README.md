@@ -7,7 +7,7 @@ Projekt realizujący obiektowy system zarządzania zamówieniami w lokalu gastro
 ## 1. Opis celu projektu
 
 ## Problem i przeznaczenie
-Program rozwiązuje problem ręcznego i niespójnego zarządzania zamówieniami w małych i średnich punktach gastronomicznych. Zastępuje tradycyjne papierowe notatki cyfrowym systemem typu POS (Point of Sale). System skierowany jest do obsługi restauracji (kelnerów, barmanów) oraz menedżerów zarządzających zamówieniami.
+Program rozwiązuje problem ręcznego i niespójnego zarządzania zamówieniami w małych i średnich punktach gastronomicznych. Zastępuje tradycyjne papierowe notatki cyfrowym systemem. System skierowany jest do obsługi restauracji.
 
 ## Główne funkcjonalności
 - Zarządzanie ofertą: Wczytywanie aktualnego menu (produktów) z pliku zewnętrznego (`DANE/menu.txt`).
@@ -47,11 +47,11 @@ Program rozwiązuje problem ręcznego i niespójnego zarządzania zamówieniami 
 - Wyjątki (`WyjatekProjektu`, `StoliktZajety`, `ZamowienieNieZnalezione`): Własna hierarchia klas wyjątków dziedzicząca po `std::exception` służąca do bezpiecznej obsługi błędów wykonania programu.
 
 ## Relacje między klasami
-- Dziedziczenie (Inheritance):
+- Dziedziczenie:
   - `ZamowienieLokal` i `ZamowienieDostawa` dziedziczą po `Zamowienie`.
   - `CenaPodstawowa` i `CenaPromocyjna` dziedziczą po `ObliczenieCeny`.
   - `StoliktZajety` i `ZamowienieNieZnalezione` dziedziczą po `WyjatekProjektu` (dziedziczącym bezpośrednio po `std::exception`).
-- Kompozycja i Agregacja (Composition / Aggregation):
+- Kompozycja i Agregacja :
   - Klasa `Zamowienie` posiada wewnątrz wektor obiektów `Produkt` (kompozycja).
   - Klasa `Zamowienie` agreguje obiekt strategii obliczania ceny poprzez inteligentny wskaźnik `std::shared_ptr<ObliczenieCeny>`.
 
