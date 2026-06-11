@@ -86,11 +86,11 @@ g++ -I PLIKI.h PLIKI.cpp/*.cpp -o projekt.exe
 
 ## 4. Opis podziału pracy w zespole
 
-- Tymon Czarniawski (Osoba 1 - model podstawowy):
+- Tymon Czarniawski (model podstawowy):
   - Pliki: `Produkt.h`/`Produkt.cpp`, `Typy.h`/`Typy.cpp`, `Zamowienie.h`/`Zamowienie.cpp`.
 
-- Michał Walczyk (Osoba 2 - dziedziczenie i liczenie ceny):
+- Michał Walczyk (dziedziczenie i liczenie ceny):
   - Pliki: `ObliczenieCeny.h`/`ObliczenieCeny.cpp`, `CenaPodstawowa.h`/`CenaPodstawowa.cpp`, `CenaPromocyjna.h`/`CenaPromocyjna.cpp`, `ZamowienieLokal.h`/`ZamowienieLokal.cpp`, `ZamowienieDostawa.h`/`ZamowienieDostawa.cpp`.
 
-- Mateusz Szarkowski (Osoba 3 - main, CRUD i pliki tekstowe):
+- Mateusz Szarkowski (main, CRUD i pliki tekstowe):
   - Pliki: `projekt1.cpp`, `DANE/menu.txt`, `README.md` (oraz nowo dodana trwałość danych w `DANE/zamowienia.txt` i obsługa wyjątków `Wyjatki.h`/`Wyjatki.cpp`).
