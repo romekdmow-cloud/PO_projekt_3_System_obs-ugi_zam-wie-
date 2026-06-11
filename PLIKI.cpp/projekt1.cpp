@@ -123,7 +123,7 @@ void dodajProduktyDoZamowienia(shared_ptr<Zamowienie> zamowienie, const vector<P
 
 void wybierzStrategie(shared_ptr<Zamowienie> zamowienie) {
     cout << "\n1. Cena podstawowa\n";
-    cout << "2. Cena promocyjna (-20% od 50 zl, -10 zl od 100 zl)\n";
+    cout << "2. Cena promocyjna (-20% od 50 zl)\n";
 
     int wybor = wczytajInt("Wybierz sposob liczenia ceny: ", 1, 2);
 
