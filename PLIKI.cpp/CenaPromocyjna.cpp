@@ -13,8 +13,8 @@ double CenaPromocyjna::zastosujPromocje(double sumaBazowa) {
 }
 
 double CenaPromocyjna::zastosujSet(double sumaBazowa) {
-    if (sumaBazowa >= 100.0) {
-        return sumaBazowa - 10.0;
+    if (sumaBazowa >= 200.0) {
+        return sumaBazowa - 20.0;
     }
 
     return sumaBazowa;
